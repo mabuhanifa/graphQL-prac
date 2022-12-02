@@ -26,21 +26,36 @@ const books = [
   { id: 8, name: "Beyond the Shadows", authorId: 3 },
 ];
 const BookType = new GraphQLObjectType({
-	name: 'Book',
-	description: 'This represents a book written by an author',
-	fields: () => ({
-	  id: { type: GraphQLNonNull(GraphQLInt) },
-	  name: { type: GraphQLNonNull(GraphQLString) },
-	  authorId: { type: GraphQLNonNull(GraphQLInt) },
-	  author: {
-		type: AuthorType,
-		resolve: (book) => {
-		  return authors.find(author => author.id === book.authorId)
-		}
-	  }
-	})
-  })
-  
+  name: "Book",
+  description: "This represents a book written by an author",
+  fields: () => ({
+    id: { type: GraphQLNonNull(GraphQLInt) },
+    name: { type: GraphQLNonNull(GraphQLString) },
+    authorId: { type: GraphQLNonNull(GraphQLInt) },
+    author: {
+      type: AuthorType,
+      resolve: (book) => {
+        return authors.find((author) => author.id === book.authorId);
+      },
+    },
+  }),
+});
+
+const AuthorType = new GraphQLObjectType({
+  name: "Author",
+  description: "This represents a author of a book",
+  fields: () => ({
+    id: { type: GraphQLNonNull(GraphQLInt) },
+    name: { type: GraphQLNonNull(GraphQLString) },
+    books: {
+      type: new GraphQLList(BookType),
+      resolve: (author) => {
+        return books.filter((book) => book.authorId === author.id);
+      },
+    },
+  }),
+});
+
 const schema = new GraphQLSchema({
   query: RootQueryType,
   mutation: RootMutationType,
