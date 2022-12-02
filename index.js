@@ -25,3 +25,17 @@ const books = [
   { id: 7, name: "The Way of Shadows", authorId: 3 },
   { id: 8, name: "Beyond the Shadows", authorId: 3 },
 ];
+
+const schema = new GraphQLSchema({
+  query: RootQueryType,
+  mutation: RootMutationType,
+});
+
+app.use(
+  "/graphql",
+  expressGraphQL({
+    schema: schema,
+    graphiql: true,
+  })
+);
+app.listen(5000, () => console.log("Server Running"));
